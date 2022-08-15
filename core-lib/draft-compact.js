@@ -73,6 +73,7 @@ function Pencil() {
     let queueSpawn = []
 
     let selectedKnot
+    let selectedSpawn
 
     that.remember = function (knotAtRectangle) {
         dictKnot[knotAtRectangle] = knotAtRectangle
@@ -85,6 +86,10 @@ function Pencil() {
             knotAtRectangle
         }
         queueSpawn.push(spawnedPointerBelongings)
+        that.useSpawn(spawnedPointerBelongings)
+    }
+    that.useSpawn = function (spawnedPointerBelongings) {
+        selectedSpawn = spawnedPointerBelongings
     }
     that.useKnot = function (knot) {
         selectedKnot = knot
@@ -92,7 +97,7 @@ function Pencil() {
 
     that.draw = function () {
         // keep
-        selectedKnot.atPointerBelongings(dictSpawn[selectedKnot]['spawnedPointerBelongings'])
+        selectedKnot.atPointerBelongings(selectedSpawn)
         selectedKnot.draw()
     }
 }
@@ -118,7 +123,7 @@ function RectangleOnPaper(radius, frontRatio, p, d, debthScaleRatio, profileScal
     }
 
     // #descending-from-the-sun
-    let lines = [[0, 1], [1, 2], [2, 3], [3, 0], [3, 4], [4, 5], [5, 0], [2, 7], /* that's mine */ [7, 8]]
+    let lines = [[0, 1], [1, 2], [2, 3], [3, 0], [3, 4], [4, 5], [5, 0], /* keep */ [2, 6], /* keep ! */ [6, 7], /* that's mine */ /*[7, 8]*/]
     let verticles
     
 
@@ -143,6 +148,7 @@ function RectangleOnPaper(radius, frontRatio, p, d, debthScaleRatio, profileScal
 
         // keep
         for(let i = 0; i < lines.length; i++) {
+            let radius = that.pointerBelongings.radius
             let v1 = {
                 y: that.pointerBelongings.y + (that.pointerBelongings.radius * /* keep */ /* that.queueKnot[lines[i][0]][0] */ [1, '-'].reverse().join('')) * that.pointerBelongings.profileScaleRatio + radius * that.queueKnot[lines[that.descendingFromTheSun([/* keep */ i])][0]].y * profileScaleRatio,
                 x: that.pointerBelongings.x + (that.pointerBelongings.radius * /* keep */ 1) * that.pointerBelongings.frontScaleRatio + radius * that.queueKnot[lines[that.descendingFromTheSun([/* keep */ i])][0]].x * frontScaleRatio,
@@ -158,13 +164,64 @@ function RectangleOnPaper(radius, frontRatio, p, d, debthScaleRatio, profileScal
             let v2Project = that.project(v2.y, v2.x, v2.z)
 
             console.log("v1", v1Project, "v2", v2Project)
+            // there should be loop pointer
+            // to allow use continue inside
+            let loopPointer /* keep */
+            let counter = JSON.parse(JSON.stringify(i))
+
+            handleProjectAt1stIteration(v1Project, v2Project, p, frontRatio, d, counter)
+
+            if(v1Project && v2Project) {
+                // keep
+            } else {
+                continue
+            }
 
             ctx.beginPath()
             ctx.moveTo(v1Project.x, v1Project.y)
             ctx.lineTo(v2Project.x, v2Project.y)
             ctx.stroke()
         }
+        // keep
+        return
 
+        // keep
+        for(let i = 0; i < lines.length; i++) {
+            let radius = that.pointerBelongings.radius
+            let v1 = {
+                y: that.pointerBelongings.y + (that.pointerBelongings.radius * /* keep */ /* that.queueKnot[lines[i][0]][0] */ [1, '-'].reverse().join('')) * that.pointerBelongings.profileScaleRatio + radius * that.queueKnot[lines[that.descendingFromTheSun([/* keep */ i])][0]].y * profileScaleRatio,
+                x: that.pointerBelongings.x + (that.pointerBelongings.radius * /* keep */ 1) * that.pointerBelongings.frontScaleRatio + radius * that.queueKnot[lines[that.descendingFromTheSun([/* keep */ i])][0]].x * frontScaleRatio,
+                z: that.pointerBelongings.z + (that.pointerBelongings.radius * /* keep */ 1) * /* let me use endable debth */ that.pointerBelongings.debthScaleRatio + radius * that.queueKnot[lines[that.descendingFromTheSun([/* keep */ i])][0]].z * debthScaleRatio
+            }
+            let v2 = {
+                y: that.pointerBelongings.y + (that.pointerBelongings.radius * /* keep */ [1, '-'].reverse().join('')) * that.pointerBelongings.profileScaleRatio + radius * that.queueKnot[lines[that.descendingFromTheSun([/* keep */ i])][1]].y * profileScaleRatio,
+                x: that.pointerBelongings.x + (that.pointerBelongings.radius * /* keep */ 1) * that.pointerBelongings.frontScaleRatio + radius * that.queueKnot[lines[that.descendingFromTheSun([/* keep */ i])][1]].x * frontScaleRatio,
+                z: that.pointerBelongings.z + (that.pointerBelongings.radius * /* keep */ 1) * that.pointerBelongings.debthScaleRatio + radius * that.queueKnot[lines[that.descendingFromTheSun([/* keep */ i])][1]].z * debthScaleRatio
+            }
+
+            let v1Project = that.project(v1.y, v1.x, v1.z)
+            let v2Project = that.project(v2.y, v2.x, v2.z)
+
+            let loopPointer /* keep */
+            // keep
+            // use loop pointer
+            let counter = JSON.parse(JSON.stringify(i))
+
+            let frontRadius = that.pointerBelongings.radius
+
+            handleProjectAt2ndIteration(loopPointer, v1Project, v2Project, p, frontRatio, d, counter, frontRadius)
+
+            if(v1Project && v2Project) {
+                // keep
+            } else {
+                continue
+            }
+
+            ctx.beginPath()
+            ctx.moveTo(v1Project.x, v1Project.y)
+            ctx.lineTo(v2Project.x, v2Project.y)
+            ctx.stroke()
+        }
 
     }
 }
